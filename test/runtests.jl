@@ -1,6 +1,5 @@
 using Test
 using LinearAlgebra
-using SparseArrays
 using SimpleLinear
 
 @testset "Shift" begin
@@ -29,9 +28,6 @@ using SimpleLinear
         @test y1 == y2
     end
 end
-
-using IterativeSolvers
-using LinearAlgebra
 
 @testset "InvertMinRes" begin
     m = [-2.0 2.0+im; 2.0-im 2.0] # symmetric
