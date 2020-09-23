@@ -2,3 +2,7 @@ name = "SimpleLinear"
 uuid = "8f35b48d-05b3-499d-8f31-5fdfb4cc22a8"
 authors = ["Kyungmin Lee <kyungmin.lee.42@gmail.com>"]
 version = "0.1.0"
+
+[deps]
+IterativeSolvers = "42fd0dbc-a981-5370-80f2-aaf504508153"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
