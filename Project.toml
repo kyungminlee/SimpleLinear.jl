@@ -1,0 +1,4 @@
+name = "SimpleLinear"
+uuid = "8f35b48d-05b3-499d-8f31-5fdfb4cc22a8"
+authors = ["Kyungmin Lee <kyungmin.lee.42@gmail.com>"]
+version = "0.1.0"
