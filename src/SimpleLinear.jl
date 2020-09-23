@@ -1,5 +1,4 @@
 module SimpleLinear
-
-greet() = print("Hello World!")
-
+include("shift.jl")
+include("invert.jl")
 end # module
