@@ -29,13 +29,13 @@ using SimpleLinear
     end
 end
 
-@testset "InvertMinRes" begin
+@testset "IterativeInvertMinRes" begin
     m = [-2.0 2.0+im; 2.0-im 2.0] # symmetric
     v1 = [1.0, 0.0]
     v2 = [0.0, 1.0]
     v3 = [0.2, 0.8]
     inv_m0 = [-2/9  (2+im)/9; (2-im)/9 2/9]
-    inv_m = InvertMinRes(m)
+    inv_m = IterativeInvertMinRes(m)
     @test isapprox(inv_m * v1, inv_m0 * v1)
     @test isapprox(inv_m * v2, inv_m0 * v2)
     @test isapprox(inv_m * v3, inv_m0 * v3)
