@@ -1,6 +1,8 @@
 using Test
 using LinearAlgebra
 using SimpleLinear
+using Random
+using SparseArrays
 
 @testset "Shift" begin
     m = [1 2; 3 4]
@@ -26,6 +28,43 @@ using SimpleLinear
         mul!(y1, m, v)
         mul!(y2, m2, v)
         @test y1 == y2
+    end
+end
+
+@testset "FactorizeInvert" begin
+    @testset "dense" begin
+        n = 16
+        rng = MersenneTwister(0)
+        x = rand(rng, Float64, (n, n))
+        x = x + x'
+        @test ishermitian(x)
+        xf = lu(x)
+        xfi = FactorizeInvert(xf)
+        z = rand(rng, Float64, n)
+        w = xfi * z
+        @test x * w ≈ z
+        fill!(w, NaN)
+        @test mul!(w, xfi, z) === w
+        @test x * w ≈ z
+    end
+    @testset "sparse" begin
+        n = 16
+        m = 4
+        rng = MersenneTwister(0)
+        x = sparse(rand(rng, 1:n, m*n), rand(rng, 1:n, m*n), rand(rng, Float64, m*n))
+        x = x + x'
+        @test ishermitian(x)
+
+        z = rand(rng, Float64, n)
+        for FACTORIZE in [lu, qr]
+            xf = FACTORIZE(x)
+            xfi = FactorizeInvert(xf)
+            w = xfi * z
+            @test x * w ≈ z
+            fill!(w, NaN)
+            @test mul!(w, xfi, z) === w
+            @test x * w ≈ z
+        end
     end
 end
 
