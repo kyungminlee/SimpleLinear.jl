@@ -7,8 +7,12 @@ export IterativeInvertGMRes
 
 export iterativeinvert
 
+export FactorizeInvert
 
-abstract type AbstractInvert{S, L<:AbstractMatrix}<:AbstractMatrix{S} end
+import LinearAlgebra
+import SuiteSparse
+
+abstract type AbstractInvert{S}<:AbstractMatrix{S} end
 
 FloatOrComplexFloat = Union{<:AbstractFloat, <:Complex{<:AbstractFloat}}
 IntegerOrComplexInteger = Union{<:Integer, <:Complex{<:Integer}}
@@ -18,10 +22,48 @@ invtype(::Type{T}) where {T<:AbstractFloat} = T
 invtype(::Type{Complex{T}}) where {T<:Integer} = ComplexF64
 invtype(::Type{Complex{T}}) where {T<:AbstractFloat} = Complex{T}
 
+
+struct FactorizeInvert{S<:FloatOrComplexFloat, F<:LinearAlgebra.Factorization{S}}<:AbstractInvert{S}
+    factorization::F
+    function FactorizeInvert(factorization::F) where {S<:FloatOrComplexFloat, F<:LinearAlgebra.Factorization{S}}
+        return new{S, F}(factorization)
+    end
+end
+
+function Base.:(*)(m::FactorizeInvert, v::AbstractVector)
+    U = promote_type(eltype(m), eltype(v))
+    w = zeros(U, length(v))
+    return LinearAlgebra.ldiv!(w, m.factorization, v)
+end
+
+function LinearAlgebra.mul!(y::AbstractVector{S}, m::FactorizeInvert, x::AbstractVector) where {S}
+    fill!(y, zero(S))
+    return LinearAlgebra.ldiv!(y, m.factorization, x)
+end
+
+Base.size(s::FactorizeInvert, args...) = size(s.factorization, args...)
+
+# workaround for missing ldiv!
+function LinearAlgebra.ldiv!(A::AbstractVector, F::SuiteSparse.SPQR.QRSparse, B::AbstractVector)
+    A[:] .= F \ B
+    return A
+end
+
+function Base.show(io::IO, mime::MIME, m::FactorizeInvert)
+    Base.show(io, mime, "FactorizeInvert of ")
+    Base.show(io, mime, m.factorization)
+end
+
+function Base.display(s::FactorizeInvert)
+    println("FactorizeInvert of:")
+    display(s.factorization)
+end
+
+
 struct IterativeInvertMinRes{
     S<:FloatOrComplexFloat,
     L<:AbstractMatrix
-}<:AbstractInvert{S, L}
+}<:AbstractInvert{S}
 
     operation::L
     kwargs::Vector{Pair{Symbol, Any}}
@@ -70,6 +112,7 @@ end
 function Base.:(*)(m::IterativeInvertMinRes, v::AbstractVector{<:FloatOrComplexFloat})
 	return IterativeSolvers.minres(m.operation, v; m.kwargs...)
 end
+
 
 # function LinearAlgebra.mul!(y::AbstractVector{S}, m::IterativeInvertMinRes, x::AbstractVector{<:IntegerOrComplexInteger}) where {S}
 #     fill!(y, zero(S))
