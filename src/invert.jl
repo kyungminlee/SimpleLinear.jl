@@ -62,13 +62,13 @@ end
 """
 function factorizeinvert(m::AbstractMatrix; algorithm::Symbol=:lu, kwargs...)
     if algorithm == :lu
-        return FactorizeInvert(lu(m; kwargs...))
+        return FactorizeInvert(LinearAlgebra.lu(m; kwargs...))
     elseif algorithm == :qr
-        return FactorizeInvert(qr(m; kwargs...))
+        return FactorizeInvert(LinearAlgebra.qr(m; kwargs...))
     elseif algorithm == :cholesky
-        return FactorizeInvert(cholesky(m; kwargs...))
+        return FactorizeInvert(LinearAlgebra.cholesky(m; kwargs...))
     elseif algorithm == :ldlt
-        return FactorizeInvert(ldlt(m; kwargs...))
+        return FactorizeInvert(LinearAlgebra.ldlt(m; kwargs...))
     else
         throw(ArgumentError("Unsupported algorithm $algorithm"))
     end
