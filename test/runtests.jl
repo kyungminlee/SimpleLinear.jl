@@ -60,6 +60,20 @@ end
         for FACTORIZE in [lu, qr]
             xf = FACTORIZE(x)
             xfi = FactorizeInvert(xf)
+            @test size(xfi) == size(x)
+            @test size(xfi, 1) == size(x, 1)
+            @test size(xfi, 2) == size(x, 2)
+            w = xfi * z
+            @test x * w ≈ z
+            fill!(w, NaN)
+            @test mul!(w, xfi, z) === w
+            @test x * w ≈ z
+        end
+        for FACTORIZE in [:lu, :qr]
+            xfi = factorizeinvert(x; algorithm=FACTORIZE)
+            @test size(xfi) == size(x)
+            @test size(xfi, 1) == size(x, 1)
+            @test size(xfi, 2) == size(x, 2)
             w = xfi * z
             @test x * w ≈ z
             fill!(w, NaN)
