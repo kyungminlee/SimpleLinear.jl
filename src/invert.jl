@@ -46,16 +46,6 @@ function LinearAlgebra.ldiv!(A::AbstractVector, F::SuiteSparse.SPQR.QRSparse, B:
     return A
 end
 
-function Base.show(io::IO, mime::MIME, m::FactorizeInvert)
-    Base.show(io, mime, "FactorizeInvert of ")
-    Base.show(io, mime, m.factorization)
-end
-
-function Base.display(s::FactorizeInvert)
-    println("FactorizeInvert of:")
-    display(s.factorization)
-end
-
 
 """
     factorizeinvert(m; algorithm=:lu, kwargs...)
@@ -143,17 +133,6 @@ end
 
 Base.size(s::IterativeInvertMinRes, args...) = size(s.operation, args...)
 
-function Base.show(io::IO, mime::MIME, m::IterativeInvertMinRes)
-    Base.show(io, mime, "IterativeInvertMinRes of ")
-    Base.show(io, mime, m.operation)
-end
-
-function Base.display(s::IterativeInvertMinRes)
-    println("IterativeInvertMinRes of: ")
-    display(s.operation)
-end
-
-
 struct IterativeInvertGMRes{
     S<:FloatOrComplexFloat,
     L<:AbstractMatrix
@@ -184,14 +163,6 @@ function LinearAlgebra.mul!(y::AbstractVector{S}, m::IterativeInvertGMRes, x::Ab
     IterativeSolvers.gmres!(y, m.operation, x; initially_zero=true, m.kwargs...)
     return y
 end
-
-Base.size(s::IterativeInvertGMRes, args...) = size(s.operation, args...)
-
-function Base.show(io::IO, mime::MIME, m::IterativeInvertGMRes)
-    Base.show(io, mime, "IterativeInvertGMRes of ")
-    Base.show(io, mime, m.operation)
-end
-
 
 function iterativeinvert(operation::L, algorithm::Symbol=:minres; kwargs...) where {L<:AbstractMatrix}
     S = eltype(operation)

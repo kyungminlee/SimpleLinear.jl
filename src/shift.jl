@@ -29,14 +29,4 @@ end
 
 Base.size(s::Shift, args...) = size(s.operation, args...)
 
-function Base.show(io::IO, mime::MIME, m::Shift)
-    Base.show(io, mime, "Shift ($(m.shift)) of ")
-    Base.show(io, mime, m.operation)
-end
-
-function Base.display(s::Shift)
-    println("Shift ($(s.shift)) of: ")
-    display(s.operation)
-end
-
 # TODO: shift composition?
