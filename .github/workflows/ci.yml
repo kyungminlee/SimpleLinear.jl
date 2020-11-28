@@ -26,6 +26,7 @@ jobs:
           julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder()); Coveralls.submit(process_folder())'
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+          COVERALLS_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
       # - name: Documentation
       #   run: |
       #     julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate()'
