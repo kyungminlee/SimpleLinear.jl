@@ -50,7 +50,7 @@ end
 """
     factorizeinvert(m; algorithm=:lu, kwargs...)
 """
-function factorizeinvert(m::AbstractMatrix; algorithm::Symbol=:lu, kwargs...)
+function factorizeinvert(m::AbstractMatrix, algorithm::Symbol=:lu; kwargs...)
     if algorithm == :lu
         return FactorizeInvert(LinearAlgebra.lu(m; kwargs...))
     elseif algorithm == :qr
