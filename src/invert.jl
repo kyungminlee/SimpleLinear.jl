@@ -60,6 +60,24 @@ function Base.display(s::FactorizeInvert)
 end
 
 
+"""
+    factorizeinvert(m; algorithm=:lu, kwargs...)
+"""
+function factorizeinvert(m::AbstractMatrix; algorithm::Symbol=:lu, kwargs...)
+    if algorithm == :lu
+        return FactorizeInvert(lu(m; kwargs...))
+    elseif algorithm == :qr
+        return FactorizeInvert(qr(m; kwargs...))
+    elseif algorithm == :cholesky
+        return FactorizeInvert(cholesky(m; kwargs...))
+    elseif algorithm == :ldlt
+        return FactorizeInvert(ldlt(m; kwargs...))
+    else
+        throw(ArgumentError("Unsupported algorithm $algorithm"))
+    end
+end
+
+
 struct IterativeInvertMinRes{
     S<:FloatOrComplexFloat,
     L<:AbstractMatrix
