@@ -213,10 +213,14 @@ end
 
 @testset "IterativeInvertMinRes" begin
     @testset "inverse type" begin
-        f = IterativeInvertGMRes([1 2; 2 3])
-        @test eltype(f) == Float64
-        f = IterativeInvertMinRes([1 2; 2 3])
-        @test eltype(f) == Float64
+        @test eltype(IterativeInvertGMRes([1 2; 2 3])) == Float64
+        @test eltype(IterativeInvertGMRes([1.0 2.0; 2.0 3.0])) == Float64
+        @test eltype(IterativeInvertGMRes([1 2; 2+im 3])) == ComplexF64
+        @test eltype(IterativeInvertGMRes([1.0 2.0; 2.0+1.0im 3.0])) == ComplexF64
+        @test eltype(IterativeInvertMinRes([1 2; 2 3])) == Float64
+        @test eltype(IterativeInvertMinRes([1.0 2.0; 2.0 3.0])) == Float64
+        @test eltype(IterativeInvertMinRes([1 2-im; 2+im 3])) == ComplexF64
+        @test eltype(IterativeInvertMinRes([1.0 2.0-1.0im; 2.0+1.0im 3.0])) == ComplexF64
     end
 
     m = [-2.0 2.0+im; 2.0-im 2.0] # symmetric
