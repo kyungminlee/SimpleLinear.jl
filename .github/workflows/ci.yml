@@ -23,7 +23,7 @@ jobs:
           JULIA_NUM_THREADS: "2"
       - name: Submit coverage
         run: |
-          julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder()); Coveralls.submit(process_folder())'
+          julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder())'
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
           COVERALLS_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
