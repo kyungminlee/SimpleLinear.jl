@@ -81,7 +81,7 @@ struct IterativeInvertMinRes{
     # verbose::Bool
 
     function IterativeInvertMinRes(operation::L; kwargs...) where {L<:AbstractMatrix}
-        !LinearAlgebra.ishermitian(operation) && throw(ArgumentError("operation must be hermitian"))
+        # !LinearAlgebra.ishermitian(operation) && throw(ArgumentError("operation must be hermitian"))
         S = invtype(valtype(operation))
         if isempty(kwargs)
             return new{S, L}(operation, Pair{Symbol, Any}[])
@@ -91,7 +91,7 @@ struct IterativeInvertMinRes{
     end
 
     function IterativeInvertMinRes{S}(operation::L; kwargs...) where {S, L<:AbstractMatrix}
-        !LinearAlgebra.ishermitian(operation) && throw(ArgumentError("operation must be hermitian"))
+        # !LinearAlgebra.ishermitian(operation) && throw(ArgumentError("operation must be hermitian"))
         if isempty(kwargs)
             return new{S, L}(operation, Pair{Symbol, Any}[])
         else
