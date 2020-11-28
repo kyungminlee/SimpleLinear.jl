@@ -219,10 +219,6 @@ end
         @test eltype(f) == Float64
     end
 
-    @testset "hermitian check" begin
-        @test_throws ArgumentError IterativeInvertMinRes([1 0; 2 3])
-    end
-
     m = [-2.0 2.0+im; 2.0-im 2.0] # symmetric
     v1 = [1.0, 0.0]
     v2 = [0.0, 1.0]
