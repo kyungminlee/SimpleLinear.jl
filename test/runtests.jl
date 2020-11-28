@@ -8,35 +8,78 @@ using SparseArrays
 @testset "Shift" begin
     m = [1 2; 3 4]
     v = [10, 100]
-    m_shift = Shift(20, m)
-    @test eltype(m_shift) == Int
     @test m * v == [10 + 200, 30 + 400]
-    @test m_shift * v == m * v + 20 .* v
 
-    let y = [0, 0]
-        mul!(y, m, v)
-        @test y == [10 + 200, 30 + 400]
-    end
-    let y = [0, 0]
-        mul!(y, m_shift, v)
-        @test y == m * v + 20 .* v
-    end
+    @testset begin "constructor"
+        m_shift = Shift(20, m)
+        @test eltype(m_shift) == Int
+        @test size(m_shift) == (2,2)
+        @test size(m_shift, 1) == 2
+        @test size(m_shift, 2) == 2
+        @test m_shift * v == m * v + 20 .* v
+        let y = [0, 0]
+            mul!(y, m, v)
+            @test y == [10 + 200, 30 + 400]
+        end
+        let y = [0, 0]
+            mul!(y, m_shift, v)
+            @test y == m * v + 20 .* v
+        end
 
-    m2 = Shift(20, Shift(-20, m))
-    @test eltype(m2) == Int
-    @test m2 * v == m * v
-    let y1 = [1983, 5],
-        y2 = [1983, 5]
+        let v = [1.0, sqrt(2.0)]
+            y1 = [1983, 5]
+            @test_throws InexactError mul!(y1, m_shift, v)
+            y2 = [1983, 5.0]
+            y3 = mul!(y2, m_shift, v)
+            @test y3 === y2
+            @test y2 == m * v + 20 .* v
+        end
 
-        mul!(y1, m, v)
-        mul!(y2, m2, v)
-        @test y1 == y2
+
+        m_shift = Shift{Int}(20, m)
+        @test eltype(m_shift) == Int
+        @test size(m_shift) == (2,2)
+        @test size(m_shift, 1) == 2
+        @test size(m_shift, 2) == 2
+        @test m_shift * v == m * v + 20 .* v
+        let y = [0, 0]
+            mul!(y, m, v)
+            @test y == [10 + 200, 30 + 400]
+        end
+        let y = [0, 0]
+            mul!(y, m_shift, v)
+            @test y == m * v + 20 .* v
+        end
+
+        m_shift = Shift{Float64}(20, m)
+        @test eltype(m_shift) == Float64
+        @test size(m_shift) == (2,2)
+        @test size(m_shift, 1) == 2
+        @test size(m_shift, 2) == 2
+        @test m_shift * v == m * v + 20 .* v
+
+        let y = [0, 0]
+            mul!(y, m, v)
+            @test y == [10 + 200, 30 + 400]
+        end
+        let y = [0, 0]
+            @test mul!(y, m_shift, v) === y
+            @test y == m * v + 20 .* v
+        end
     end
 
     m3 = Shift(π, m)
     @test eltype(m3) == Float64
     @test m3 * v == m * v + π .* v
     let y1 = [1983, 5]
+        @test_throws InexactError mul!(y1, m3, v)
+        y2 = [1983, 5.0]
+        y3 = mul!(y2, m3, v)
+        @test y3 === y2
+        @test y2 == m * v + π .* v
+    end
+    let v = [1.0, 1.3]
+        y1 = [1983, 5]
         @test_throws InexactError mul!(y1, m3, v)
         y2 = [1983, 5.0]
         y3 = mul!(y2, m3, v)
@@ -70,6 +113,34 @@ using SparseArrays
         @test y2 == m * v + π*im .* v
     end
 
+    mp = [1 2π; 0 4]
+    m6 = Shift(1im, mp)
+    @test eltype(m6) == ComplexF64
+    @test m6 * v == mp * v + im .* v
+    let y1 = [1983, 5]
+        @test_throws InexactError mul!(y1, m6, v)
+        y1 = [1983, 5.0]
+        @test_throws InexactError mul!(y1, m6, v)
+        y1 = [1983, 5im]
+        @test_throws InexactError mul!(y1, m6, v)
+        y2 = [1983, π*im]
+        y3 = mul!(y2, m6, v)
+        @test y3 === y2
+        @test y2 == mp * v + im .* v
+    end
+
+    @testset begin "Nested shift"
+        m2 = Shift(20, Shift(-20, m))
+        @test eltype(m2) == Int
+        @test m2 * v == m * v
+        let y1 = [1983, 5],
+            y2 = [1983, 5]
+
+            mul!(y1, m, v)
+            mul!(y2, m2, v)
+            @test y1 == y2
+        end
+    end
 
 end
 
