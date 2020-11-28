@@ -1,16 +1,13 @@
-import IterativeSolvers
-import LinearAlgebra
-
-export Invert
 export IterativeInvertMinRes
 export IterativeInvertGMRes
-
 export iterativeinvert
 
 export FactorizeInvert
+export factorizeinvert
 
 import LinearAlgebra
 import SuiteSparse
+import IterativeSolvers
 
 abstract type AbstractInvert{S}<:AbstractMatrix{S} end
 

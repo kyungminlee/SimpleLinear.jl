@@ -1,7 +1,7 @@
 export Shift
 
-import IterativeSolvers
 import LinearAlgebra
+import IterativeSolvers
 
 struct Shift{S<:Number, L<:AbstractMatrix}<:AbstractMatrix{S}
     shift::S
