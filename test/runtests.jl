@@ -1,6 +1,7 @@
 using Test
-using LinearAlgebra
 using SimpleLinear
+
+using LinearAlgebra
 using Random
 using SparseArrays
 
