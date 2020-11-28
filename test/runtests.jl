@@ -9,6 +9,7 @@ using SparseArrays
     m = [1 2; 3 4]
     v = [10, 100]
     m_shift = Shift(20, m)
+    @test eltype(m_shift) == Int
     @test m * v == [10 + 200, 30 + 400]
     @test m_shift * v == m * v + 20 .* v
 
@@ -22,6 +23,7 @@ using SparseArrays
     end
 
     m2 = Shift(20, Shift(-20, m))
+    @test eltype(m2) == Int
     @test m2 * v == m * v
     let y1 = [1983, 5],
         y2 = [1983, 5]
@@ -30,6 +32,45 @@ using SparseArrays
         mul!(y2, m2, v)
         @test y1 == y2
     end
+
+    m3 = Shift(π, m)
+    @test eltype(m3) == Float64
+    @test m3 * v == m * v + π .* v
+    let y1 = [1983, 5]
+        @test_throws InexactError mul!(y1, m3, v)
+        y2 = [1983, 5.0]
+        y3 = mul!(y2, m3, v)
+        @test y3 === y2
+        @test y2 == m * v + π .* v
+    end
+
+    m4 = Shift(4im, m)
+    @test eltype(m4) == Complex{Int}
+    @test m4 * v == m * v + 4im .* v
+    let y1 = [1983, 5]
+        @test_throws InexactError mul!(y1, m4, v)
+        y2 = [1983, 5im]
+        y3 = mul!(y2, m4, v)
+        @test y3 === y2
+        @test y2 == m * v + 4im .* v
+    end
+
+    m5 = Shift(π*im, m)
+    @test eltype(m5) == ComplexF64
+    @test m5 * v == m * v + π*im .* v
+    let y1 = [1983, 5]
+        @test_throws InexactError mul!(y1, m5, v)
+        y1 = [1983, 5.0]
+        @test_throws InexactError mul!(y1, m5, v)
+        y1 = [1983, 5im]
+        @test_throws InexactError mul!(y1, m5, v)
+        y2 = [1983, π*im]
+        y3 = mul!(y2, m5, v)
+        @test y3 === y2
+        @test y2 == m * v + π*im .* v
+    end
+
+
 end
 
 @testset "FactorizeInvert" begin
