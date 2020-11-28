@@ -198,7 +198,7 @@ end
             @test x * w ≈ z
         end
         for FACTORIZE in [:lu, :qr]
-            xfi = factorizeinvert(x; algorithm=FACTORIZE)
+            xfi = factorizeinvert(x, FACTORIZE)
             @test size(xfi) == size(x)
             @test size(xfi, 1) == size(x, 1)
             @test size(xfi, 2) == size(x, 2)
@@ -228,31 +228,37 @@ end
     v2 = [0.0, 1.0]
     v3 = [0.2, 0.8]
     inv_m0 = [-2/9  (2+im)/9; (2-im)/9 2/9]
-    inv_m = IterativeInvertMinRes(m)
-    @test isapprox(inv_m * v1, inv_m0 * v1)
-    @test isapprox(inv_m * v2, inv_m0 * v2)
-    @test isapprox(inv_m * v3, inv_m0 * v3)
 
-    let y1 = zeros(ComplexF64, 2)
-        y2 = zeros(ComplexF64, 2)
-        mul!(y1, inv_m0, v1)
-        mul!(y2, inv_m , v1)
-        @test isapprox(y1, y2)
-    end
-    let y1 = zeros(ComplexF64, 2)
-        y2 = zeros(ComplexF64, 2)
-        mul!(y1, inv_m0, v2)
-        mul!(y2, inv_m , v2)
-        @test isapprox(y1, y2)
-    end
-    let y1 = zeros(ComplexF64, 2)
-        y2 = zeros(ComplexF64, 2)
-        mul!(y1, inv_m0, v3)
-        mul!(y2, inv_m , v3)
-        @test isapprox(y1, y2)
-    end
+    @testset "inverse test" begin
+        for INV in [IterativeInvertMinRes, IterativeInvertGMRes, x->iterativeinvert(x, :minres), x->iterativeinvert(x, :gmres)]
+            inv_m = INV(m)
+            @test size(inv_m) == (2,2)
+            @test size(inv_m, 1) == 2
+            @test size(inv_m, 2) == 2
+            @test isapprox(inv_m * v1, inv_m0 * v1)
+            @test isapprox(inv_m * v2, inv_m0 * v2)
+            @test isapprox(inv_m * v3, inv_m0 * v3)
 
-
+            let y1 = zeros(ComplexF64, 2)
+                y2 = zeros(ComplexF64, 2)
+                mul!(y1, inv_m0, v1)
+                mul!(y2, inv_m , v1)
+                @test isapprox(y1, y2)
+            end
+            let y1 = zeros(ComplexF64, 2)
+                y2 = zeros(ComplexF64, 2)
+                mul!(y1, inv_m0, v2)
+                mul!(y2, inv_m , v2)
+                @test isapprox(y1, y2)
+            end
+            let y1 = zeros(ComplexF64, 2)
+                y2 = zeros(ComplexF64, 2)
+                mul!(y1, inv_m0, v3)
+                mul!(y2, inv_m , v3)
+                @test isapprox(y1, y2)
+            end
+        end
+    end
 
 
     # eigenvalues = [-2.449489742783178, 2.449489742783178]
