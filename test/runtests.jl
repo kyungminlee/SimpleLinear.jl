@@ -145,6 +145,21 @@ using SparseArrays
 end
 
 @testset "FactorizeInvert" begin
+
+    @testset "inverse type" begin
+        m = [1 0; 2 3]
+        f = lu(m)
+        @test eltype(f) == Float64
+        fi = FactorizeInvert(f)
+        @test eltype(fi) == Float64
+
+        m = [1 0; 2 3im]
+        f = lu(m)
+        @test eltype(f) == ComplexF64
+        fi = FactorizeInvert(f)
+        @test eltype(fi) == ComplexF64
+    end
+
     @testset "dense" begin
         n = 16
         rng = MersenneTwister(0)
@@ -160,6 +175,7 @@ end
         @test mul!(w, xfi, z) === w
         @test x * w ≈ z
     end
+
     @testset "sparse" begin
         n = 16
         m = 4
@@ -196,6 +212,17 @@ end
 end
 
 @testset "IterativeInvertMinRes" begin
+    @testset "inverse type" begin
+        f = IterativeInvertGMRes([1 2; 2 3])
+        @test eltype(f) == Float64
+        f = IterativeInvertMinRes([1 2; 2 3])
+        @test eltype(f) == Float64
+    end
+
+    @testset "hermitian check" begin
+        @test_throws ArgumentError IterativeInvertMinRes([1 0; 2 3])
+    end
+
     m = [-2.0 2.0+im; 2.0-im 2.0] # symmetric
     v1 = [1.0, 0.0]
     v2 = [0.0, 1.0]
