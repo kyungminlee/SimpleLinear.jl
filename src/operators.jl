@@ -1,5 +1,10 @@
+import LinearAlgebra
+
 export MatrixPlusExpr
 export MatrixTimesExpr
+
+
+
 
 struct MatrixPlusExpr{S, Ops<:Tuple{Vararg{<:AbstractMatrix}}} <: AbstractMatrix{S}
     size::Tuple{Int, Int}
@@ -41,14 +46,14 @@ struct MatrixTimesExpr{S, Ops<:Tuple{Vararg{<:AbstractMatrix}}} <: AbstractMatri
 end
 
 
-Base.size(x::MatrixPlus) = x.size
-Base.size(x::MatrixPlus, i::Integer) = x.size[i]
+Base.size(x::MatrixPlusExpr) = x.size
+Base.size(x::MatrixPlusExpr, i::Integer) = x.size[i]
 
-Base.size(x::MatrixTimes) = x.size
-Base.size(x::MatrixTimes, i::Integer) = x.size[i]
+Base.size(x::MatrixTimesExpr) = x.size
+Base.size(x::MatrixTimesExpr, i::Integer) = x.size[i]
 
-Base.eltype(::Type{MatrixPlus{S, T}}) where {S, T} = S
-Base.eltype(::Type{MatrixTimes{S, T}}) where {S, T} = S
+Base.eltype(::Type{MatrixPlusExpr{S, T}}) where {S, T} = S
+Base.eltype(::Type{MatrixTimesExpr{S, T}}) where {S, T} = S
 
 
 x = [1.0 0.0; 0.0 1.0]
