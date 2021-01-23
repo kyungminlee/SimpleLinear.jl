@@ -67,7 +67,7 @@ end
 
 
 function wrap_cg!(A::AbstractMatrix; kwargs...)
-    function _cg!(x, b)
+    function cg!(x, b)
         fill!(x, zero(eltype(x)))
         result, history = IterativeSolvers.cg!(x, A, b; initially_zero=true, log=true, kwargs...)
         #history.resnom[end] > history.tol || @warn "cg! not converged: $history"
@@ -78,7 +78,7 @@ end
 
 
 function wrap_minres!(A::AbstractMatrix; kwargs...)
-    function _minres!(x, b)
+    function minres!(x, b)
         fill!(x, zero(eltype(x)))
         result, history = IterativeSolvers.minres!(x, A, b; initially_zero=true, log=true, kwargs...)
         history.isconverged || @warn "minres! not converged: $history"
@@ -88,7 +88,7 @@ end
 
 
 function wrap_chebyshev!(A::AbstractMatrix, λmin::Real, λmax::Real; kwargs...)
-    function _chebyshev!(x, b)
+    function chebyshev!(x, b)
         fill!(x, zero(eltype(x)))
         result, history = IterativeSolvers.chebyshev!(x, A, b, λmin, λmax; initially_zero=true, log=true, kwargs...)
         history.isconverged || @warn "chebyshev! not converged: $history"
@@ -97,7 +97,7 @@ function wrap_chebyshev!(A::AbstractMatrix, λmin::Real, λmax::Real; kwargs...)
 end
 
 function wrap_bicgstabl!(A::AbstractMatrix, l=2; kwargs...)
-    function _bicgstabl!(x, b)
+    function bicgstabl!(x, b)
         fill!(x, zero(eltype(x)))
         result, history = IterativeSolvers.bicgstabl!(x, A, b, l; log=true, kwargs...)
         history.isconverged || @warn "bicgstabl! not converged: $history"
@@ -107,7 +107,7 @@ end
 
 
 function wrap_idrs!(A::AbstractMatrix; s=8, kwargs...)
-    function _idrs!(x, b)
+    function idrs!(x, b)
         fill!(x, zero(eltype(x)))
         result, history = IterativeSolvers.idrs!(x, A, b; s=8, log=true, kwargs...)
         history.isconverged || @warn "idrs! not converged: $history"
@@ -117,7 +117,7 @@ end
 
 
 function wrap_gmres!(A::AbstractMatrix; kwargs...)
-    function _gmres!(x, b)
+    function gmres!(x, b)
         fill!(x, zero(eltype(x)))
         result, history = IterativeSolvers.gmres!(x, A, b; initially_zero=true, log=true, kwargs...)
         history.isconverged || @warn "gmres! not converged: $history"
@@ -127,7 +127,7 @@ end
 
 
 function wrap_lsmr!(A::AbstractMatrix; kwargs...)
-    function _lsmr!(x, b)
+    function lsmr!(x, b)
         fill!(x, zero(eltype(x)))
         result, history = IterativeSolvers.lsmr!(x, A, b; log=true, kwargs...)
         history.isconverged || @warn "lsmr! not converged: $history"
@@ -137,7 +137,7 @@ end
 
 
 function wrap_lsqr!(A::AbstractMatrix; kwargs...)
-    function _lsqr!(x, b)
+    function lsqr!(x, b)
         fill!(x, zero(eltype(x)))
         result, history = IterativeSolvers.lsqr!(x, A, b; log=true, kwargs...)
         history.isconverged || @warn "lsqr! not converged: $history"
