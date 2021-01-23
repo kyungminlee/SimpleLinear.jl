@@ -96,7 +96,7 @@ function wrap_chebyshev!(A::AbstractMatrix, λmin::Real, λmax::Real; kwargs...)
     end
 end
 
-function wrap_bicgstabl(A::AbstractMatrix, l; kwargs...)
+function wrap_bicgstabl!(A::AbstractMatrix, l=2; kwargs...)
     function _bicgstabl!(x, b)
         fill!(x, zero(eltype(x)))
         result, history = IterativeSolvers.bicgstabl!(x, A, b, l; log=true, kwargs...)
@@ -106,7 +106,7 @@ function wrap_bicgstabl(A::AbstractMatrix, l; kwargs...)
 end
 
 
-function wrap_idrs(A::AbstractMatrix; s=8, kwargs...)
+function wrap_idrs!(A::AbstractMatrix; s=8, kwargs...)
     function _idrs!(x, b)
         fill!(x, zero(eltype(x)))
         result, history = IterativeSolvers.idrs!(x, A, b; s=8, log=true, kwargs...)
